@@ -1,39 +1,40 @@
 import { Composition } from "remotion";
 import { VideoTimeline } from "./scenes/VideoTimeline";
-import { MotionDesignDemo } from "./scenes/MotionDesign";
-import { CaptionedVideo } from "./scenes/CaptionedVideo";
+import { EmotionDesignDemo } from "./scenes/EmotionDesign";
+import { ReelsComposition } from "./scenes/ReelsComposition";
 
-// Timeline principal: 437 frames @ 30fps ≈ 14.5s
-const TOTAL_FRAMES = 437;
-// Motion design demo: 5s
-const MOTION_FRAMES = 150;
-// Captioned video: duração depende do clipe (ajuste após transcrição)
-const CAPTIONED_FRAMES = 450;
 const FPS = 30;
+// Vídeo editado: 39s → 1170 frames
+const REELS_FRAMES = 1170;
+const EMOTION_FRAMES = 150;
+const TIMELINE_FRAMES = 437;
 
 export const VideoEditorComposition = () => {
   return (
     <>
+      {/* Composição principal: Reels 9:16 com legendas + emotion design */}
+      <Composition
+        id="Reels"
+        component={ReelsComposition}
+        durationInFrames={REELS_FRAMES}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      {/* Demo de emotion design isolado */}
+      <Composition
+        id="EmotionDesign"
+        component={EmotionDesignDemo}
+        durationInFrames={EMOTION_FRAMES}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      {/* Timeline 16:9 original */}
       <Composition
         id="VideoEditor"
         component={VideoTimeline}
-        durationInFrames={TOTAL_FRAMES}
-        fps={FPS}
-        width={1280}
-        height={720}
-      />
-      <Composition
-        id="MotionDesign"
-        component={MotionDesignDemo}
-        durationInFrames={MOTION_FRAMES}
-        fps={FPS}
-        width={1280}
-        height={720}
-      />
-      <Composition
-        id="CaptionedVideo"
-        component={CaptionedVideo}
-        durationInFrames={CAPTIONED_FRAMES}
+        durationInFrames={TIMELINE_FRAMES}
         fps={FPS}
         width={1280}
         height={720}
