@@ -8,143 +8,190 @@ import {
   staticFile,
   useDelayRender,
 } from "remotion";
-import { parseSrt } from "@remotion/captions";
+import { parseSrt, createTikTokStyleCaptions } from "@remotion/captions";
 import type { Caption } from "@remotion/captions";
-import { useState, useEffect, useCallback } from "react";
-import { loadLocalFonts, FONT_BOLD, FONT_ITALIC } from "../fonts";
-
-loadLocalFonts();
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { FONT } from "../fonts";
 
 const CYAN = "#4FC3F7";
 const WHITE = "#FFFFFF";
 const BLACK = "#000000";
 
-const HIGHLIGHT_WORDS = [
+// Words that get the CYAN BOX treatment
+const HIGHLIGHT_WORDS = new Set([
   "rico", "valor", "enfraquecer", "caro", "mudar", "percepção",
-  "ouvir", "posicionar", "oportunidades", "melhor",
-];
+  "ouvir", "posicionar", "oportunidades", "melhor", "suficiente",
+  "comunicação", "história",
+]);
 
-const ITALIC_WORDS = [
+// Words that get CYAN ITALIC treatment
+const ITALIC_WORDS = new Set([
   "não", "pode", "muito", "bem", "também", "bastante", "completamente",
-];
+  "demais",
+]);
 
-type WordToken = { text: string; isHighlight: boolean; isItalic: boolean };
+const FONT_SIZE = 78;
+const CAPTION_SWITCH_MS = 1800;
 
-function tokenizeText(text: string): WordToken[] {
-  return text.split(/\s+/).filter(Boolean).map((word) => {
-    const clean = word.toLowerCase().replace(/[.,!?]/g, "");
-    return {
-      text: word,
-      isHighlight: HIGHLIGHT_WORDS.includes(clean),
-      isItalic: ITALIC_WORDS.includes(clean),
-    };
-  });
+type WordStyle = "highlight" | "italic" | "normal";
+
+function classifyWord(word: string): WordStyle {
+  const clean = word.toLowerCase().replace(/[.,!?;:]/g, "");
+  if (HIGHLIGHT_WORDS.has(clean)) return "highlight";
+  if (ITALIC_WORDS.has(clean)) return "italic";
+  return "normal";
 }
 
-const CaptionBlock: React.FC<{ caption: Caption; isUpper: boolean }> = ({
-  caption,
-  isUpper,
-}) => {
+// ── Single caption page renderer ──────────────────────────────────
+const CaptionPage: React.FC<{
+  tokens: Array<{ text: string; fromMs: number; toMs: number }>;
+  startMs: number;
+}> = ({ tokens, startMs }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
+  const currentMs = (frame / fps) * 1000 + startMs;
 
-  const slideY = interpolate(frame, [0, 0.3 * fps], [isUpper ? "-20px" : "20px", "0px"], {
+  // Page entrance animation
+  const pageOpacity = interpolate(frame, [0, 4], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const pageSlideY = interpolate(frame, [0, 6], [14, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
     easing: Easing.bezier(0.16, 1, 0.3, 1),
   });
 
-  const opacity = interpolate(frame, [0, 0.2 * fps], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
-  const lines = caption.text.split("\n").filter(Boolean);
-  const fontSize = 76;
-
   return (
     <div
       style={{
-        opacity,
-        translate: `0 ${slideY}`,
+        opacity: pageOpacity,
+        translate: `0 ${pageSlideY}px`,
         display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        padding: "0 48px",
+        flexWrap: "wrap",
+        gap: "12px 10px",
+        padding: "0 40px",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
-      {lines.map((line, li) => (
-        <div key={li} style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
-          {tokenizeText(line).map((token, ti) => {
-            if (token.isHighlight) {
-              return (
-                <span
-                  key={ti}
-                  style={{
-                    fontFamily: FONT_BOLD,
-                    fontWeight: 900,
-                    fontSize,
-                    color: BLACK,
-                    backgroundColor: CYAN,
-                    padding: "0 12px 4px",
-                    lineHeight: 1.1,
-                    display: "inline-block",
-                  }}
-                >
-                  {token.text}
-                </span>
-              );
-            }
-            if (token.isItalic) {
-              return (
-                <span
-                  key={ti}
-                  style={{
-                    fontFamily: FONT_ITALIC,
-                    fontWeight: 900,
-                    fontStyle: "italic",
-                    fontSize: fontSize * 0.9,
-                    color: CYAN,
-                    lineHeight: 1.1,
-                    textShadow: "0 2px 10px rgba(0,0,0,0.8)",
-                  }}
-                >
-                  {token.text}
-                </span>
-              );
-            }
-            return (
-              <span
-                key={ti}
-                style={{
-                  fontFamily: FONT_BOLD,
-                  fontWeight: 900,
-                  fontSize,
-                  color: WHITE,
-                  lineHeight: 1.1,
-                  textShadow: `
-                    2px 2px 0 ${BLACK},
-                    -2px -2px 0 ${BLACK},
-                    2px -2px 0 ${BLACK},
-                    -2px 2px 0 ${BLACK},
-                    0 0 24px rgba(0,0,0,0.5)
-                  `,
-                }}
-              >
-                {token.text}
-              </span>
-            );
-          })}
-        </div>
-      ))}
+      {tokens.map((token, i) => {
+        const word = token.text.trim();
+        if (!word) return null;
+        const style = classifyWord(word);
+
+        // Per-word stagger entrance
+        const wordDelay = i * 1.5;
+        const wordOpacity = interpolate(frame, [wordDelay, wordDelay + 3], [0, 1], {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+        });
+        const wordSlideY = interpolate(frame, [wordDelay, wordDelay + 4], [10, 0], {
+          extrapolateLeft: "clamp",
+          extrapolateRight: "clamp",
+          easing: Easing.bezier(0.16, 1, 0.3, 1),
+        });
+
+        // Active word pulse (for highlight/important words when spoken)
+        const isActive = token.fromMs <= currentMs && token.toMs > currentMs;
+
+        if (style === "highlight") {
+          const punchScale = isActive
+            ? interpolate(frame, [0, 3, 6], [1, 1.08, 1], {
+                extrapolateLeft: "clamp",
+                extrapolateRight: "clamp",
+              })
+            : 1;
+          return (
+            <span
+              key={i}
+              style={{
+                opacity: wordOpacity,
+                translate: `0 ${wordSlideY}px`,
+                scale: String(punchScale),
+                fontFamily: FONT,
+                fontWeight: 900,
+                fontSize: FONT_SIZE,
+                color: BLACK,
+                backgroundColor: CYAN,
+                padding: "2px 14px 5px",
+                lineHeight: 1.05,
+                display: "inline-block",
+                borderRadius: 3,
+                textTransform: "uppercase",
+                letterSpacing: "-0.5px",
+              }}
+            >
+              {word}
+            </span>
+          );
+        }
+
+        if (style === "italic") {
+          return (
+            <span
+              key={i}
+              style={{
+                opacity: wordOpacity,
+                translate: `0 ${wordSlideY}px`,
+                fontFamily: FONT,
+                fontWeight: 900,
+                fontStyle: "italic",
+                fontSize: FONT_SIZE * 0.88,
+                color: CYAN,
+                lineHeight: 1.1,
+                display: "inline-block",
+                textShadow: "0 2px 14px rgba(0,0,0,0.9)",
+              }}
+            >
+              {word}
+            </span>
+          );
+        }
+
+        // Normal word — bold white with strong black outline
+        const activeGlow = isActive
+          ? `0 0 20px ${CYAN}55`
+          : "0 0 0 transparent";
+
+        return (
+          <span
+            key={i}
+            style={{
+              opacity: wordOpacity,
+              translate: `0 ${wordSlideY}px`,
+              fontFamily: FONT,
+              fontWeight: 900,
+              fontSize: FONT_SIZE,
+              color: WHITE,
+              lineHeight: 1.1,
+              display: "inline-block",
+              textShadow: `
+                3px 3px 0 ${BLACK},
+                -3px -3px 0 ${BLACK},
+                3px -3px 0 ${BLACK},
+                -3px 3px 0 ${BLACK},
+                3px 0 0 ${BLACK},
+                -3px 0 0 ${BLACK},
+                0 3px 0 ${BLACK},
+                0 -3px 0 ${BLACK},
+                ${activeGlow}
+              `,
+            }}
+          >
+            {word}
+          </span>
+        );
+      })}
     </div>
   );
 };
 
+// ── Main KineticCaption component ─────────────────────────────────
 export const KineticCaption: React.FC<{ srtFile: string }> = ({ srtFile }) => {
   const [captions, setCaptions] = useState<Caption[] | null>(null);
-  const { delayRender: dr, continueRender: cr, cancelRender } = useDelayRender();
-  const [handle] = useState(() => dr());
+  const { delayRender, continueRender, cancelRender } = useDelayRender();
+  const [handle] = useState(() => delayRender("Loading SRT captions"));
   const { fps } = useVideoConfig();
 
   const fetchCaptions = useCallback(async () => {
@@ -153,36 +200,47 @@ export const KineticCaption: React.FC<{ srtFile: string }> = ({ srtFile }) => {
       const text = await res.text();
       const { captions: parsed } = parseSrt({ input: text });
       setCaptions(parsed);
-      cr(handle);
+      continueRender(handle);
     } catch (e) {
       cancelRender(e);
     }
-  }, [cr, cancelRender, handle, srtFile]);
+  }, [continueRender, cancelRender, handle, srtFile]);
 
-  useEffect(() => { fetchCaptions(); }, [fetchCaptions]);
+  useEffect(() => {
+    fetchCaptions();
+  }, [fetchCaptions]);
+
+  const pages = useMemo(() => {
+    if (!captions) return [];
+    const { pages: p } = createTikTokStyleCaptions({
+      captions,
+      combineTokensWithinMilliseconds: CAPTION_SWITCH_MS,
+    });
+    return p;
+  }, [captions]);
 
   if (!captions) return null;
 
   return (
     <AbsoluteFill style={{ pointerEvents: "none" }}>
-      {captions.map((caption, index) => {
-        const startFrame = Math.floor((caption.startMs / 1000) * fps);
-        const endFrame = Math.ceil((caption.endMs / 1000) * fps);
-        const duration = Math.max(1, endFrame - startFrame);
-        const isUpper = index % 2 === 0;
+      {pages.map((page, index) => {
+        const nextPage = pages[index + 1] ?? null;
+        const startFrame = (page.startMs / 1000) * fps;
+        const endFrame = nextPage
+          ? Math.min((nextPage.startMs / 1000) * fps, startFrame + (CAPTION_SWITCH_MS / 1000) * fps)
+          : startFrame + (CAPTION_SWITCH_MS / 1000) * fps;
+        const durationInFrames = Math.max(1, Math.round(endFrame - startFrame));
 
         return (
-          <Sequence key={index} from={startFrame} durationInFrames={duration}>
+          <Sequence key={index} from={Math.floor(startFrame)} durationInFrames={durationInFrames}>
             <AbsoluteFill
               style={{
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-                ...(isUpper
-                  ? { top: 80 }
-                  : { top: undefined, bottom: 160 }),
+                justifyContent: "flex-end",
+                alignItems: "center",
+                paddingBottom: 200,
               }}
             >
-              <CaptionBlock caption={caption} isUpper={isUpper} />
+              <CaptionPage tokens={page.tokens} startMs={page.startMs} />
             </AbsoluteFill>
           </Sequence>
         );

@@ -1,6 +1,6 @@
 import { Composition } from "remotion";
 import { VideoTimeline } from "./scenes/VideoTimeline";
-import { EmotionDesignDemo } from "./scenes/EmotionDesign";
+import { ReelsComposition as EmotionDesignDemo } from "./scenes/ReelsComposition";
 import { ReelsComposition } from "./scenes/ReelsComposition";
 
 const FPS = 30;
