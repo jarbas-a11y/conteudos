@@ -1,3 +1,7 @@
 node_modules/
 out/
 .DS_Store
+whisper.cpp/
+public/original.mp4
+public/cut.mp4
+scripts/_stills.mjs

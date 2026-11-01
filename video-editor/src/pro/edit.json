@@ -1,0 +1,527 @@
+{
+ "duration": 36.834,
+ "cuts": [
+  4.808,
+  8.939,
+  10.539,
+  12.543,
+  15.153,
+  18.592,
+  20.34,
+  23.256,
+  24.95,
+  26.229,
+  27.425,
+  31.806,
+  33.369
+ ],
+ "words": [
+  {
+   "text": "Coisas",
+   "start": 0.13,
+   "end": 0.39
+  },
+  {
+   "text": "sobre",
+   "start": 0.39,
+   "end": 0.92
+  },
+  {
+   "text": "comunicação",
+   "start": 0.92,
+   "end": 1.64
+  },
+  {
+   "text": "que",
+   "start": 1.64,
+   "end": 1.76
+  },
+  {
+   "text": "me",
+   "start": 1.76,
+   "end": 1.84
+  },
+  {
+   "text": "deixariam",
+   "start": 1.84,
+   "end": 2.24
+  },
+  {
+   "text": "mais",
+   "start": 2.24,
+   "end": 2.72
+  },
+  {
+   "text": "rico",
+   "start": 2.72,
+   "end": 3.16
+  },
+  {
+   "text": "se",
+   "start": 3.16,
+   "end": 3.33
+  },
+  {
+   "text": "eu",
+   "start": 3.33,
+   "end": 3.42
+  },
+  {
+   "text": "tivesse",
+   "start": 3.42,
+   "end": 4.17
+  },
+  {
+   "text": "aprendido",
+   "start": 4.17,
+   "end": 4.63
+  },
+  {
+   "text": "antes.",
+   "start": 4.63,
+   "end": 4.82
+  },
+  {
+   "text": "Saber",
+   "start": 4.82,
+   "end": 5.22
+  },
+  {
+   "text": "fazer",
+   "start": 5.22,
+   "end": 5.62
+  },
+  {
+   "text": "pode",
+   "start": 5.62,
+   "end": 5.94
+  },
+  {
+   "text": "não",
+   "start": 5.94,
+   "end": 6.24
+  },
+  {
+   "text": "ser",
+   "start": 6.24,
+   "end": 6.5
+  },
+  {
+   "text": "suficiente",
+   "start": 6.5,
+   "end": 7.4
+  },
+  {
+   "text": "se",
+   "start": 7.43,
+   "end": 7.48
+  },
+  {
+   "text": "ninguém",
+   "start": 7.48,
+   "end": 7.99
+  },
+  {
+   "text": "reconhece",
+   "start": 7.99,
+   "end": 8.58
+  },
+  {
+   "text": "o",
+   "start": 8.58,
+   "end": 8.64
+  },
+  {
+   "text": "seu",
+   "start": 8.64,
+   "end": 8.84
+  },
+  {
+   "text": "valor.",
+   "start": 8.84,
+   "end": 8.939
+  },
+  {
+   "text": "Explicar",
+   "start": 8.939,
+   "end": 9.506
+  },
+  {
+   "text": "demais",
+   "start": 9.506,
+   "end": 9.976
+  },
+  {
+   "text": "alguma",
+   "start": 9.976,
+   "end": 10.615
+  },
+  {
+   "text": "coisa",
+   "start": 10.615,
+   "end": 10.655
+  },
+  {
+   "text": "pode",
+   "start": 10.655,
+   "end": 11.035
+  },
+  {
+   "text": "enfraquecer",
+   "start": 11.035,
+   "end": 11.875
+  },
+  {
+   "text": "o",
+   "start": 11.875,
+   "end": 11.955
+  },
+  {
+   "text": "teu",
+   "start": 11.955,
+   "end": 12.115
+  },
+  {
+   "text": "argumento.",
+   "start": 12.115,
+   "end": 12.543
+  },
+  {
+   "text": "Evitar",
+   "start": 12.572,
+   "end": 13.262
+  },
+  {
+   "text": "conflitos",
+   "start": 13.262,
+   "end": 14.162
+  },
+  {
+   "text": "pode",
+   "start": 14.362,
+   "end": 14.752
+  },
+  {
+   "text": "sair",
+   "start": 14.752,
+   "end": 15.239
+  },
+  {
+   "text": "muito,",
+   "start": 15.239,
+   "end": 15.839
+  },
+  {
+   "text": "muito",
+   "start": 15.839,
+   "end": 16.399
+  },
+  {
+   "text": "caro.",
+   "start": 16.399,
+   "end": 17.229
+  },
+  {
+   "text": "Contar",
+   "start": 17.229,
+   "end": 17.799
+  },
+  {
+   "text": "bem",
+   "start": 17.799,
+   "end": 18.109
+  },
+  {
+   "text": "uma",
+   "start": 18.109,
+   "end": 18.359
+  },
+  {
+   "text": "história",
+   "start": 18.359,
+   "end": 18.655
+  },
+  {
+   "text": "e",
+   "start": 18.665,
+   "end": 18.715
+  },
+  {
+   "text": "comunicar",
+   "start": 18.715,
+   "end": 19.565
+  },
+  {
+   "text": "bem",
+   "start": 19.565,
+   "end": 19.845
+  },
+  {
+   "text": "uma",
+   "start": 19.845,
+   "end": 20.125
+  },
+  {
+   "text": "ideia",
+   "start": 20.125,
+   "end": 20.42
+  },
+  {
+   "text": "pode",
+   "start": 20.42,
+   "end": 20.52
+  },
+  {
+   "text": "mudar",
+   "start": 20.52,
+   "end": 20.78
+  },
+  {
+   "text": "completamente",
+   "start": 20.78,
+   "end": 21.46
+  },
+  {
+   "text": "a",
+   "start": 21.46,
+   "end": 21.5
+  },
+  {
+   "text": "percepção",
+   "start": 21.5,
+   "end": 22.07
+  },
+  {
+   "text": "da",
+   "start": 22.07,
+   "end": 22.17
+  },
+  {
+   "text": "outra",
+   "start": 22.17,
+   "end": 22.35
+  },
+  {
+   "text": "pessoa",
+   "start": 22.35,
+   "end": 22.79
+  },
+  {
+   "text": "sobre",
+   "start": 22.79,
+   "end": 23.333
+  },
+  {
+   "text": "essa",
+   "start": 23.333,
+   "end": 23.473
+  },
+  {
+   "text": "sua",
+   "start": 23.473,
+   "end": 23.653
+  },
+  {
+   "text": "ideia.",
+   "start": 23.653,
+   "end": 24.253
+  },
+  {
+   "text": "Ouvir",
+   "start": 24.253,
+   "end": 24.613
+  },
+  {
+   "text": "também",
+   "start": 24.613,
+   "end": 24.843
+  },
+  {
+   "text": "é",
+   "start": 24.843,
+   "end": 25.032
+  },
+  {
+   "text": "uma",
+   "start": 25.032,
+   "end": 25.092
+  },
+  {
+   "text": "baita",
+   "start": 25.092,
+   "end": 25.522
+  },
+  {
+   "text": "habilidade",
+   "start": 25.522,
+   "end": 26.229
+  },
+  {
+   "text": "de",
+   "start": 26.307,
+   "end": 26.327
+  },
+  {
+   "text": "comunicação.",
+   "start": 26.327,
+   "end": 27.227
+  },
+  {
+   "text": "A",
+   "start": 27.428,
+   "end": 27.508
+  },
+  {
+   "text": "nossa",
+   "start": 27.508,
+   "end": 27.938
+  },
+  {
+   "text": "capacidade",
+   "start": 27.938,
+   "end": 28.838
+  },
+  {
+   "text": "de",
+   "start": 28.868,
+   "end": 28.968
+  },
+  {
+   "text": "se",
+   "start": 28.968,
+   "end": 29.138
+  },
+  {
+   "text": "posicionar",
+   "start": 29.138,
+   "end": 29.998
+  },
+  {
+   "text": "muda",
+   "start": 29.998,
+   "end": 30.448
+  },
+  {
+   "text": "ou",
+   "start": 30.448,
+   "end": 30.508
+  },
+  {
+   "text": "pode",
+   "start": 30.508,
+   "end": 30.848
+  },
+  {
+   "text": "mudar",
+   "start": 30.848,
+   "end": 31.278
+  },
+  {
+   "text": "bastante",
+   "start": 31.278,
+   "end": 31.877
+  },
+  {
+   "text": "as",
+   "start": 31.877,
+   "end": 31.927
+  },
+  {
+   "text": "oportunidades",
+   "start": 31.927,
+   "end": 32.687
+  },
+  {
+   "text": "que",
+   "start": 32.687,
+   "end": 32.867
+  },
+  {
+   "text": "a",
+   "start": 32.867,
+   "end": 32.927
+  },
+  {
+   "text": "gente",
+   "start": 32.927,
+   "end": 33.227
+  },
+  {
+   "text": "recebe.",
+   "start": 33.227,
+   "end": 33.369
+  },
+  {
+   "text": "Falar",
+   "start": 33.369,
+   "end": 33.963
+  },
+  {
+   "text": "melhor",
+   "start": 33.963,
+   "end": 34.813
+  },
+  {
+   "text": "não",
+   "start": 34.813,
+   "end": 35.193
+  },
+  {
+   "text": "é",
+   "start": 35.193,
+   "end": 35.573
+  },
+  {
+   "text": "falar",
+   "start": 35.573,
+   "end": 36.103
+  },
+  {
+   "text": "mais.",
+   "start": 36.103,
+   "end": 36.503
+  }
+ ],
+ "scenes": [
+  {
+   "id": "hook",
+   "start": 0,
+   "end": 3
+  },
+  {
+   "id": "c1",
+   "start": 4.808,
+   "end": 7.32
+  },
+  {
+   "id": "c2",
+   "start": 8.939,
+   "end": 11.695
+  },
+  {
+   "id": "c3",
+   "start": 12.543,
+   "end": 14.992
+  },
+  {
+   "id": "c4",
+   "start": 17.209,
+   "end": 19.805
+  },
+  {
+   "id": "c5",
+   "start": 23.993,
+   "end": 26.112
+  },
+  {
+   "id": "c6",
+   "start": 27.377,
+   "end": 29.908
+  },
+  {
+   "id": "c7",
+   "start": 33.267,
+   "end": 36.663
+  }
+ ]
+}

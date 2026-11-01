@@ -2,6 +2,7 @@ import { Composition } from "remotion";
 import { VideoTimeline } from "./scenes/VideoTimeline";
 import { ReelsComposition as EmotionDesignDemo } from "./scenes/ReelsComposition";
 import { ReelsComposition } from "./scenes/ReelsComposition";
+import { ReelsPro, REELS_PRO_FRAMES } from "./pro/ReelsPro";
 
 const FPS = 30;
 // Vídeo editado: 39s → 1170 frames
@@ -12,6 +13,7 @@ const TIMELINE_FRAMES = 437;
 export const VideoEditorComposition = () => {
   return (
     <>
+      <Composition id="ReelsPro" component={ReelsPro} durationInFrames={REELS_PRO_FRAMES} fps={FPS} width={1080} height={1920} />
       {/* Composição principal: Reels 9:16 com legendas + emotion design */}
       <Composition
         id="Reels"
