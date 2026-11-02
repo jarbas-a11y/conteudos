@@ -557,12 +557,12 @@ export const S7: React.FC<SceneProps> = ({ d, b }) => {
           fontWeight: 900,
           fontSize: 140,
           color: K.orange,
-          opacity: ease(frame, no + 10 + span, 8),
+          opacity: ease(frame, no + 28, 8),
           textShadow: `0 0 30px ${K.orange}88`,
           fontVariantNumeric: "tabular-nums",
         }}
       >
-        +{Math.min(cards, Math.max(0, Math.floor((frame - no - 10) / span) + 1))}
+        +{Math.min(cards, Math.max(0, Math.floor((frame - no - 28) / span) + 1))}
       </div>
     </AbsoluteFill>
   );
