@@ -74,7 +74,6 @@ export const Condicao: React.FC<SceneProps> = ({ d, b }) => {
           <rect x="140" y="240" width="20" height="50" rx="8" fill={K.ink} />
         </svg>
       </AbsoluteFill>
-      <Puppet x={540} y={1440} height={540} pose={[[0, "pointUp"], [ok, "open"], [prob, "chin"], [lock + 10, "facepalm"]]} />
       <Label text={"CONDIÇÃO\nPARA FALAR"} at={lock + 16} x={540} y={220} rot={-3} size={100} tone="orange" />
     </AbsoluteFill>
   );
@@ -85,16 +84,16 @@ export const Defesa: React.FC<SceneProps> = ({ d, b }) => {
   const frame = useCurrentFrame();
   const shield = at(b, 0, d, 0.4);
   const hits = [
-    { t: "EGOÍSTA", from: [-500, 260], to: [320, 600], a: at(b, 1, d, 0.7) },
-    { t: "ARROGANTE", from: [1580, 380], to: [770, 720], a: at(b, 2, d, 0.78) },
-    { t: "INCONVENIENTE", from: [540, -300], to: [540, 520], a: at(b, 3, d, 0.86) },
+    { t: "EGOÍSTA", from: [-500, 300], to: [250, 720], a: at(b, 1, d, 0.7) },
+    { t: "ARROGANTE", from: [1580, 420], to: [830, 860], a: at(b, 2, d, 0.78) },
+    { t: "INCONVENIENTE", from: [540, -300], to: [540, 560], a: at(b, 3, d, 0.86) },
   ];
   const sp = pop(frame, shield, 16);
   return (
     <AbsoluteFill>
       <Backdrop glow={K.orange} />
       <Label text={"PREFERÊNCIA\nSIMPLES"} at={at(b, 4, d, 0.05)} outAt={shield - 6} x={540} y={430} rot={-3} size={110} />
-      <svg width="560" height="660" viewBox="0 0 100 118" style={{ position: "absolute", left: 260, top: 420, scale: String(sp), filter: `drop-shadow(0 0 ${30 + 20 * Math.sin(frame / 8)}px ${K.orange}88)` }}>
+      <svg width="720" height="850" viewBox="0 0 100 118" style={{ position: "absolute", left: 180, top: 470, scale: String(sp), filter: `drop-shadow(0 0 ${30 + 20 * Math.sin(frame / 8)}px ${K.orange}88)` }}>
         <path d="M50 3 L94 18 V54 C94 84 74 104 50 115 C26 104 6 84 6 54 V18 Z" fill={K.bg2} stroke={K.orange} strokeWidth={5} />
         <path d="M50 14 L84 26 V54 C84 78 68 94 50 103 C32 94 16 78 16 54 V26 Z" fill="none" stroke={K.paper} strokeWidth={2} opacity={0.5} />
         <text x="50" y="68" textAnchor="middle" fontFamily={COND} fontWeight={900} fontSize="16" fill={K.paper} letterSpacing="1">
@@ -115,7 +114,6 @@ export const Defesa: React.FC<SceneProps> = ({ d, b }) => {
           </div>
         );
       })}
-      <Puppet x={540} y={1560} height={560} pose={[[0, "idle"], [shield, "crossed"], [hits[0].a, "stop"], [hits[2].a + 12, "hips"]]} />
     </AbsoluteFill>
   );
 };
@@ -155,7 +153,23 @@ export const LabelStorm: React.FC<
             />
           );
         })}
-        <Puppet x={charX} y={1490} height={charW} pose={question ? [[0, "chinL"], [q, "shrug"], [q + 70, "raise"]] : [[0, "chin"], [at(b, 1, d, 0.4), "crossed"], [at(b, 2, d, 0.6), "chin"]]} />
+        {question ? (
+          <Puppet
+            x={charX}
+            y={1490}
+            height={charW}
+            pose={[
+              [0, "chinL", "pensativo"],
+              [at(b, 3, d, 0.45), "crossed", "apreensivo"],
+              [q, "pointL", "arregalado"],
+              [q + 63, "listen", "piscadinha"],
+            ]}
+          />
+        ) : (
+          <div style={{ position: "absolute", inset: 0 }}>
+            <Bubble icon="question" at={2} x={540} y={980} size={300 + Math.sin(frame / 9) * 14} bob={16} />
+          </div>
+        )}
       </AbsoluteFill>
       {question && (
         <div

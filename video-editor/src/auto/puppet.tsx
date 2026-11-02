@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext } from "react";
 import { Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { FPS, K, clamp } from "./theme";
 
@@ -8,28 +8,6 @@ export const SceneStart = createContext(0);
 export type Expr =
   | "neutro" | "sorriso" | "rindo" | "empolgado" | "desconfiado" | "bravo" | "surpreso" | "chocado"
   | "uau" | "apreensivo" | "ironico" | "pensativo" | "piscadinha" | "arregalado" | "falando";
-
-// Reactions to the narrator, in absolute seconds of the 1.5x voiceover.
-export const EXPR_TRACK: Array<[number, Expr]> = [
-  [0, "desconfiado"], [1.6, "pensativo"], [3.4, "apreensivo"], [5.6, "ironico"], [8.1, "arregalado"],
-  [9.4, "surpreso"], [11.6, "pensativo"], [14.5, "apreensivo"], [16.0, "desconfiado"], [17.2, "ironico"],
-  [19.3, "chocado"], [21.2, "sorriso"], [23.6, "neutro"], [25.2, "desconfiado"], [26.6, "bravo"],
-  [29.4, "pensativo"], [31.4, "neutro"], [32.2, "empolgado"], [33.7, "apreensivo"], [35.4, "falando"],
-  [37.1, "apreensivo"], [38.7, "ironico"], [41.3, "uau"], [43.0, "empolgado"], [44.4, "piscadinha"],
-  [45.2, "surpreso"], [46.9, "chocado"], [49.0, "desconfiado"], [52.4, "falando"], [54.0, "apreensivo"],
-  [55.2, "sorriso"], [57.3, "ironico"], [58.3, "neutro"], [61.0, "bravo"], [62.9, "chocado"],
-  [64.6, "pensativo"], [67.6, "desconfiado"], [70.0, "pensativo"], [73.8, "apreensivo"], [75.2, "arregalado"],
-  [76.3, "apreensivo"], [77.7, "uau"], [79.1, "desconfiado"], [81.4, "apreensivo"], [84.2, "bravo"],
-  [85.3, "pensativo"], [88.6, "apreensivo"], [91.5, "neutro"], [92.6, "sorriso"], [95.1, "pensativo"],
-  [97.6, "ironico"], [101.6, "sorriso"], [104.5, "empolgado"], [106.8, "rindo"], [107.6, "pensativo"],
-  [110.4, "desconfiado"], [112.1, "uau"], [114.0, "piscadinha"], [115.0, "sorriso"],
-];
-
-const exprAt = (sec: number) => {
-  let cur = EXPR_TRACK[0];
-  for (const e of EXPR_TRACK) if (e[0] <= sec) cur = e;
-  return cur;
-};
 
 // ── Poses: hand / foot targets in rig units (neck at 0,0; y down) ──
 type P = [number, number];
@@ -70,8 +48,8 @@ const ik = (s: P, t: P, a: number, b: number, bend: 1 | -1): P => {
 
 const lerpP = (p: P, q: P, t: number): P => [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t];
 
-// Pose track: [localFrame, pose] — pose eases in over 9 frames after its frame.
-export type PoseTrack = Array<[number, PoseName]>;
+// Pose track: [localFrame, pose, expression?]. Pose eases in over 9 frames; the expression holds until the next entry that sets one.
+export type PoseTrack = Array<[number, PoseName, Expr?]>;
 
 const usePose = (track: PoseTrack, frame: number) => {
   let i = 0;
@@ -92,19 +70,27 @@ export const Puppet: React.FC<{
   y: number; // ground line (feet)
   height: number; // full figure height in px
   pose?: PoseTrack;
-  expr?: Expr; // fixed expression; otherwise follows EXPR_TRACK
-  exprOffset?: number; // seconds shift along EXPR_TRACK
+  expr?: Expr; // fixed expression; otherwise taken from the pose track
   flip?: boolean;
   enter?: number; // local frame of the pop-in
   walk?: [number, number, number]; // [fromFrame, toFrame, dx px] walk cycle while moving
   style?: React.CSSProperties;
-}> = ({ x, y, height, pose = [[0, "idle"]], expr, exprOffset = 0, flip, enter = 0, walk, style }) => {
+}> = ({ x, y, height, pose = [[0, "idle"]], expr, flip, enter = 0, walk, style }) => {
   const frame = useCurrentFrame();
-  const sceneStart = useContext(SceneStart);
-  const sec = (sceneStart + frame) / FPS + exprOffset;
-  const [exprStart, exprName] = expr ? [-99, expr] : exprAt(sec);
-  const variant = Math.floor(exprStart * 7) % 2 === 0 ? 1 : 2;
-  const sinceExpr = (sec - exprStart) * FPS;
+  let exprName: Expr = expr ?? "neutro";
+  let exprStart = -99;
+  let exprIdx = 0;
+  if (!expr) {
+    pose.forEach(([f, , e], k) => {
+      if (e && f <= frame) {
+        exprName = e;
+        exprStart = f;
+        exprIdx = k;
+      }
+    });
+  }
+  const variant = exprIdx % 2 === 0 ? 1 : 2;
+  const sinceExpr = frame - exprStart;
   const headPop = interpolate(sinceExpr, [0, 4, 10], [1.13, 0.96, 1], clamp);
 
   const { cur, prev, t, changedAt } = usePose(pose, frame);

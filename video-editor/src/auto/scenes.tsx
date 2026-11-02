@@ -72,15 +72,20 @@ const Kicker: React.FC<{ n: number; title: string; at?: number }> = ({ n, title,
 // ── 1 · Abertura de impacto — autocensura ──────────────────────────
 export const S1: React.FC<SceneProps> = ({ d, b }) => {
   const frame = useCurrentFrame();
-  const slam = at(b, 0, d, 0.35);
-  const icons: Array<{ icon: Parameters<typeof Bubble>[0]["icon"]; a: number; r: number; tone?: "orange" }> = [
-    { icon: "dots", a: 200, r: 1 },
-    { icon: "x", a: 160, r: 1 },
-    { icon: "scribble", a: 330, r: 1 },
-    { icon: "micOff", a: 15, r: 1 },
-    { icon: "quote", a: 50, r: 1 },
-  ];
-  const tape = ease(frame, slam, 10);
+  const slam = at(b, 0, d, 0.28);
+  const five = at(b, 1, d, 0.15);
+  const sometimes = at(b, 2, d, 0.42);
+  const reasonable = at(b, 3, d, 0.68);
+  const saying = at(b, 4, d, 0.79);
+  const thinks = at(b, 5, d, 0.89);
+  const changes = [0, five, slam, sometimes, reasonable, saying];
+  const last = changes.filter((c) => c <= frame).pop() ?? 0;
+  const punch = interpolate(frame - last, [0, 3, 12], [1.09, 1.05, 1], clamp);
+  const icons: Array<Parameters<typeof Bubble>[0]["icon"]> = ["dots", "x", "scribble", "micOff", "quote"];
+  const tapeIn = ease(frame, slam, 10);
+  const tapeOut = ease(frame, reasonable - 10, 12);
+  const fiveP = pop(frame, five, 12) * (1 - ease(frame, sometimes, 10));
+  const ring = interpolate(frame, [five, slam], [1, 0], clamp);
   return (
     <AbsoluteFill>
       <Cam keys={[0, 14, d]} scale={[1.6, 1.08, 1.0]} y={[160, 0, -10]}>
@@ -89,14 +94,29 @@ export const S1: React.FC<SceneProps> = ({ d, b }) => {
       <Cam keys={[0, 14, d]} scale={[1.9, 1.12, 1.03]} y={[260, 0, -20]} origin="50% 40%">
         <Orbit cx={540} cy={760} rx={520} ry={430} at={6} tilt={-18} arc={0.42} width={8} />
         <Orbit cx={540} cy={760} rx={600} ry={500} at={10} tilt={160} arc={0.3} width={5} speed={-0.7} opacity={0.8} />
-        <Puppet x={540} y={1760} height={1300} pose={[[0, "chin"], [at(b, 0, d, 0.35), "shrug"], [at(b, 0, d, 0.35) + 45, "chin"]]} />
+        <AbsoluteFill style={{ scale: String(punch), transformOrigin: "50% 40%" }}>
+          <Puppet
+            x={540}
+            y={1760}
+            height={1300}
+            pose={[
+              [0, "chin", "desconfiado"],
+              [five, "pointUp", "arregalado"],
+              [slam, "open", "chocado"],
+              [sometimes, "sheepish", "apreensivo"],
+              [reasonable, "crossed", "ironico"],
+              [saying, "chin", "pensativo"],
+            ]}
+          />
+        </AbsoluteFill>
         {icons.map((ic, i) => {
-          const ang = ((ic.a + frame * 0.35) * Math.PI) / 180;
+          const ang = (([200, 160, 330, 15, 50][i] + frame * 0.35) * Math.PI) / 180;
           return (
             <Bubble
-              key={ic.icon}
-              icon={ic.icon}
+              key={ic}
+              icon={ic}
               at={8 + i * 6}
+              outAt={reasonable - 6}
               x={540 + Math.cos(ang) * 440}
               y={720 + Math.sin(ang) * 380}
               size={190}
@@ -108,13 +128,33 @@ export const S1: React.FC<SceneProps> = ({ d, b }) => {
       <div
         style={{
           position: "absolute",
+          right: 70,
+          top: 230,
+          width: 230,
+          height: 230,
+          scale: String(fiveP),
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <svg width="230" height="230" viewBox="0 0 230 230" style={{ position: "absolute", inset: 0 }}>
+          <circle cx="115" cy="115" r="100" fill={K.ink} stroke={K.paper} strokeWidth="10" />
+          <circle cx="115" cy="115" r="78" fill="none" stroke={K.orange} strokeWidth="22" strokeDasharray={490} strokeDashoffset={490 * (1 - ring)} transform="rotate(-90 115 115)" />
+        </svg>
+        <span style={{ position: "relative", fontFamily: COND, fontWeight: 900, fontSize: 96, color: K.paper }}>5s</span>
+      </div>
+      <div
+        style={{
+          position: "absolute",
           left: -40,
           right: -40,
           top: 1180,
           height: 190,
           background: K.ink,
           rotate: "-6deg",
-          scale: `${tape} 1`,
+          scale: `${tapeIn} 1`,
+          translate: `${tapeOut * 1300}px 0`,
           transformOrigin: "left center",
           boxShadow: "0 30px 60px rgba(0,0,0,0.6)",
           display: "flex",
@@ -137,12 +177,50 @@ export const S1: React.FC<SceneProps> = ({ d, b }) => {
           AUTO<span style={{ color: K.orange }}>CENSURA</span>
         </div>
       </div>
+      <Label text={"PROVAR QUE É\nRAZOÁVEL"} at={reasonable} x={330} y={300} rot={-4} size={88} from="left" />
+      <Label text={"O QUE\nREALMENTE PENSA"} at={thinks} x={800} y={1230} rot={5} size={50} tone="orange" from="right" />
     </AbsoluteFill>
   );
 };
 
 // ── 2 · Excesso de cautela — frases em órbita ──────────────────────
 const PHRASES = ["POSSO ESTAR\nERRADO, MAS…", "TALVEZ SEJA\nSÓ EU", "NÃO SEI SE\nFAZ SENTIDO", "TALVEZ", "DESCULPA", "SÓ ACHO\nQUE…", "É SÓ UMA\nIMPRESSÃO", "SE NÃO FOR\nINCÔMODO"];
+
+const Approval: React.FC<{ at: number; out: number }> = ({ at: a, out }) => {
+  const frame = useCurrentFrame();
+  const p = pop(frame, a, 12) * (1 - ease(frame, out, 10));
+  const n = Math.round(interpolate(frame, [a, out], [0, 1240], { ...clamp, easing: Easing.out(Easing.cubic) }));
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: 540 - 230,
+        top: 1150,
+        width: 460,
+        padding: "18px 0",
+        borderRadius: 999,
+        background: K.paper,
+        boxShadow: "0 24px 50px rgba(0,0,0,0.5)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 22,
+        scale: String(p),
+      }}
+    >
+      <Icon name="like" size={74} color={K.orange} />
+      <span style={{ fontFamily: COND, fontWeight: 900, fontSize: 84, color: K.ink, fontVariantNumeric: "tabular-nums" }}>{n.toLocaleString("pt-BR")}</span>
+      {[0, 1, 2].map((i) => {
+        const hp = ease(frame, a + 10 + i * 9, 26);
+        return (
+          <div key={i} style={{ position: "absolute", right: 40 + i * 50, top: -10 - hp * 160, opacity: (1 - hp) * (frame > a + 10 + i * 9 ? 1 : 0) }}>
+            <Icon name="like" size={48} color={K.orange} />
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 export const S2: React.FC<SceneProps> = ({ d, b }) => {
   const frame = useCurrentFrame();
@@ -175,10 +253,11 @@ export const S2: React.FC<SceneProps> = ({ d, b }) => {
           );
         })}
         <div style={{ position: "absolute", inset: 0, zIndex: 3 }}>
-          <Puppet x={540} y={1330} height={600} pose={[[0, "listen"], [at(b, 1, d, 0.4), "shrug"], [at(b, 3, d, 0.5), "open"], [at(b, 0, d, 0.55), "arms"], [at(b, 0, d, 0.55) + 60, "shrug"]]} />
+          <Bubble icon="dots" at={2} x={540} y={860} size={340} bob={14} />
         </div>
       </Cam>
       <Label text="APROVAÇÃO" at={at(b, 5, d, 0.1)} outAt={at(b, 1, d, 0.3) - 12} x={540} y={420} rot={-3} size={150} tone="orange" />
+      <Approval at={at(b, 5, d, 0.1) + 6} out={at(b, 1, d, 0.3) - 12} />
     </AbsoluteFill>
   );
 };
@@ -186,7 +265,7 @@ export const S2: React.FC<SceneProps> = ({ d, b }) => {
 // ── 3 · Reunião — hesitação ────────────────────────────────────────
 export const S3: React.FC<SceneProps> = ({ d, b }) => {
   const frame = useCurrentFrame();
-  const raise = at(b, 0, d, 0.25);
+  const raise = at(b, 3, d, 0.3);
   const cuts = [0, Math.round(d * 0.33), Math.round(d * 0.66)];
   const seg = cuts.filter((c) => frame >= c).length - 1;
   const zoom = [1.0, 1.18, 1.32][seg] + interpolate(frame, [cuts[seg], cuts[seg] + 40], [0, 0.03], clamp);
@@ -194,7 +273,18 @@ export const S3: React.FC<SceneProps> = ({ d, b }) => {
     <AbsoluteFill>
       <Backdrop plate={IMG("p3.jpg")} plateOpacity={0.6} />
       <AbsoluteFill style={{ scale: String(zoom), transformOrigin: "52% 38%" }}>
-        <Puppet x={540} y={1620} height={1150} pose={[[0, "idle"], [raise, "raise"], [at(b, 1, d, 0.6), "talk"], [at(b, 2, d, 0.8), "shrug"]]} />
+        <Puppet
+          x={540}
+          y={1620}
+          height={1150}
+          pose={[
+            [0, "chin", "pensativo"],
+            [at(b, 3, d, 0.3), "raise", "empolgado"],
+            [at(b, 4, d, 0.45), "listen", "apreensivo"],
+            [at(b, 1, d, 0.6), "talk", "falando"],
+            [at(b, 2, d, 0.8), "shrug", "apreensivo"],
+          ]}
+        />
         {[0, 1, 2, 3].map((i) => {
           const p = pop(frame, raise + i * 2, 8);
           const ang = (-120 + i * 22) * (Math.PI / 180);
@@ -360,7 +450,7 @@ export const S6: React.FC<SceneProps> = ({ d, b }) => {
         <Backdrop plate={IMG("p6.jpg")} plateOpacity={0.75} glow={K.orange} />
       </Cam>
       <Cam keys={[0, close, close + 24, d]} scale={[1.0, 1.0, 1.32, 1.36]} x={[40, -20, 0, 0]} y={[0, 0, 90, 96]} origin="50% 46%">
-        <Puppet x={540} y={1700} height={1000} pose={[[0, "listen"], [close, "sheepish"]]} />
+        <Puppet x={540} y={1700} height={1000} pose={[[0, "listen", "sorriso"], [close, "sheepish"]]} />
         {[0, 1, 2].map((i) => {
           const p = pop(frame, close + 10 + i * 3, 8);
           return (
@@ -391,28 +481,48 @@ export const S7: React.FC<SceneProps> = ({ d, b }) => {
   const frame = useCurrentFrame();
   const no = at(b, 0, d, 0.12);
   const cards = 6;
-  const span = Math.max(10, Math.round((d - no - 30) / cards));
-  const scroll = interpolate(frame, [no + span * 3, d], [0, -200], clamp);
+  const span = Math.max(8, Math.round((d - no - 40) / cards));
+  const scroll = 0;
   return (
     <AbsoluteFill>
       <Backdrop />
       <Label text={"NÃO É SÓ\nNO TRABALHO"} at={at(b, 1, d, 0.05)} outAt={no - 10} x={540} y={420} rot={-4} size={100} tone="orange" />
-      <Puppet x={290} y={1470} height={640} pose={[[0, "idle"], [no, "stop"], [no + 50, "shrug"], [no + 90, "stop"]]} />
+      <div
+        style={{
+          position: "absolute",
+          left: 40,
+          top: 640,
+          width: 520,
+          textAlign: "center",
+          fontFamily: COND,
+          fontWeight: 900,
+          fontSize: 300,
+          lineHeight: 1,
+          color: K.orange,
+          textShadow: `0 0 60px ${K.orange}88`,
+          scale: String(interpolate(frame, [no, no + 6, no + 12], [2.4, 0.92, 1], clamp) * (1 - 0.45 * interpolate(frame, [no + 30, d], [0, 1], clamp))),
+          opacity: frame < no ? 0 : 1 - 0.55 * interpolate(frame, [no + 30, d], [0, 1], clamp),
+          filter: `blur(${interpolate(frame, [no + 30, d], [0, 5], clamp)}px)`,
+          rotate: `${interpolate(frame, [no + 30, d], [0, -8], clamp)}deg`,
+        }}
+      >
+        NÃO
+      </div>
       <div style={{ position: "absolute", left: 470, top: 280, width: 300, height: 220 }}>
         <Bubble icon="x" at={no} x={150} y={110} size={260} tone="orange" tail="left" />
       </div>
       <div style={{ position: "absolute", left: 0, top: 0, translate: `0 ${scroll}px` }}>
         {Array.from({ length: cards }).map((_, i) => {
-          const a = no + 10 + i * span;
+          const a = no + 28 + i * span;
           const p = ease(frame, a, 14);
           return (
             <div
               key={i}
               style={{
                 position: "absolute",
-                left: 540,
-                top: 560 + i * 170,
-                width: 470,
+                left: 70 + ((i * 97) % 260),
+                top: 600 + i * 96,
+                width: 560,
                 height: 140,
                 borderRadius: 28,
                 background: `linear-gradient(170deg, ${K.paper}, ${K.paperShade})`,
@@ -422,8 +532,8 @@ export const S7: React.FC<SceneProps> = ({ d, b }) => {
                 gap: 22,
                 padding: "0 30px",
                 opacity: p,
-                translate: `${(1 - p) * 300}px 0`,
-                rotate: `${(1 - p) * 8}deg`,
+                translate: `${(1 - p) * 300}px ${(1 - p) * -260}px`,
+                rotate: `${(i % 2 ? -1 : 1) * (3 + i * 1.5) + (1 - p) * 20}deg`,
               }}
             >
               <div style={{ width: 66, height: 66, borderRadius: 12, border: `5px solid ${K.ink}`, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -498,7 +608,29 @@ export const S8: React.FC<SceneProps> = ({ d, b }) => {
                     overflow: "hidden",
                   }}
                 >
-                  <Puppet x={140} y={790} height={640} expr={(["sorriso", "empolgado", "piscadinha"] as const)[i]} pose={[[0, (["arms", "hips", "open"] as const)[i]]]} style={{ opacity: 0.92 }} />
+                  <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 26 }}>
+                    <div
+                      style={{
+                        fontFamily: COND,
+                        fontWeight: 900,
+                        fontSize: 64,
+                        color: K.paper,
+                        writingMode: "vertical-rl",
+                        rotate: "180deg",
+                        letterSpacing: 6,
+                        opacity: ease(frame, 18 + i * 8, 14),
+                      }}
+                    >
+                      {["SIMPÁTICO", "RAZOÁVEL", "EDUCADO"][i]}
+                    </div>
+                    <div style={{ display: "flex", gap: 4 }}>
+                      {[0, 1, 2, 3, 4].map((k) => (
+                        <span key={k} style={{ fontSize: 40, color: K.orange, opacity: ease(frame, 30 + i * 8 + k * 4, 6), textShadow: `0 0 12px ${K.orange}` }}>
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                   <div
                     style={{
                       position: "absolute",
@@ -513,9 +645,45 @@ export const S8: React.FC<SceneProps> = ({ d, b }) => {
           })}
         </AbsoluteFill>
       </AbsoluteFill>
-      <Orbit cx={540} cy={1260} rx={560} ry={90} at={10} tilt={0} arc={0.8} width={6} />
+
       <Label text="NEGOCIAÇÃO" at={at(b, 1, d, 0.35)} x={540} y={330} rot={-3} size={90} tone="glass" />
-      <Puppet x={540} y={1470} height={520} pose={[[0, "chin"], [at(b, 0, d, 0.65), "shrug"]]} />
+      <div
+        style={{
+          position: "absolute",
+          left: 90,
+          top: 1262,
+          width: 900,
+          padding: "22px 34px",
+          borderRadius: 28,
+          background: "rgba(10,20,26,0.82)",
+          border: `2px solid ${K.teal}`,
+          display: "grid",
+          gap: 16,
+          opacity: ease(frame, 12, 14),
+          translate: `0 ${(1 - ease(frame, 12, 16)) * 80}px`,
+        }}
+      >
+        {(
+          [
+            ["SIMPATIA", 0.35, 0.95],
+            ["FIRMEZA", 0.8, 0.18],
+            ["CONCORDAR", 0.3, 0.9],
+          ] as const
+        ).map(([label, a, z], i) => {
+          const t = interpolate(frame, [20 + i * 10, d - 20], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+          const wob = Math.sin(frame / 7 + i) * 0.02;
+          const v = a + (z - a) * t + wob;
+          return (
+            <div key={label} style={{ display: "grid", gridTemplateColumns: "230px 1fr", alignItems: "center", gap: 20 }}>
+              <span style={{ fontFamily: COND, fontWeight: 800, fontSize: 38, color: K.paper, letterSpacing: 2 }}>{label}</span>
+              <div style={{ position: "relative", height: 14, borderRadius: 7, background: "#2B3C45" }}>
+                <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${v * 100}%`, borderRadius: 7, background: i === 1 ? K.mute : K.orange }} />
+                <div style={{ position: "absolute", top: -13, left: `calc(${v * 100}% - 20px)`, width: 40, height: 40, borderRadius: 20, background: K.paper, boxShadow: "0 4px 12px rgba(0,0,0,0.5)" }} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </AbsoluteFill>
   );
 };
@@ -547,7 +715,28 @@ export const S9: React.FC<SceneProps> = ({ d, b }) => {
             ))}
           </svg>
         ))}
-        <Puppet x={540} y={1660} height={950} pose={[[0, "idle"], [line, "hips"], [at(b, 1, d, 0.7), "open"], [at(b, 4, d, 0.9), "arms"]]} />
+        <div style={{ position: "absolute", left: 0, right: 0, top: 730, height: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
+          {Array.from({ length: 25 }).map((_, i) => {
+            const firm = ease(frame, line, 24);
+            const env = Math.exp(-(((i - 12) / 7) ** 2));
+            const shaky = 26 + 46 * Math.abs(Math.sin(frame * 0.9 + i * 2.7) * Math.cos(frame * 0.37 + i * 1.3)) * env;
+            const steady = 70 + 300 * env * (0.55 + 0.45 * Math.abs(Math.sin(frame * 0.18 + i * 0.42)));
+            const h = shaky + (steady - shaky) * firm;
+            return (
+              <div
+                key={i}
+                style={{
+                  width: 18,
+                  height: h,
+                  borderRadius: 9,
+                  background: firm > 0.5 ? K.orange : K.mute,
+                  opacity: 0.55 + 0.45 * firm,
+                  boxShadow: firm > 0.5 ? `0 0 ${18 * firm}px ${K.orange}` : "none",
+                }}
+              />
+            );
+          })}
+        </div>
       </Cam>
       {["EDUCADA", "RESPEITOSA", "EMPÁTICA"].map((w, i) => (
         <Label key={w} text={w} at={at(b, 1 + i, d, 0.7 + i * 0.04)} x={[270, 810, 540][i]} y={[1130, 1180, 1300][i]} rot={[-5, 4, -2][i]} size={84} tone="glass" />
