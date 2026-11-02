@@ -1,6 +1,7 @@
 import React from "react";
 import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
-import { Backdrop, Bubble, Character, Icon, Label, Orbit, ease, pop } from "./kit";
+import { Backdrop, Bubble, Icon, Label, Orbit, ease, pop } from "./kit";
+import { Puppet } from "./puppet";
 import { COND, K, SANS, clamp } from "./theme";
 import type { SceneProps } from "./scenes";
 
@@ -73,8 +74,8 @@ export const Condicao: React.FC<SceneProps> = ({ d, b }) => {
           <rect x="140" y="240" width="20" height="50" rx="8" fill={K.ink} />
         </svg>
       </AbsoluteFill>
-      <Character src={IMG("c2.png")} x={540} y={1000} width={520} />
-      <Label text={"CONDIÇÃO\nPARA FALAR"} at={lock + 16} x={540} y={1300} rot={-3} size={110} tone="orange" />
+      <Puppet x={540} y={1440} height={540} pose={[[0, "pointUp"], [ok, "open"], [prob, "chin"], [lock + 10, "facepalm"]]} />
+      <Label text={"CONDIÇÃO\nPARA FALAR"} at={lock + 16} x={540} y={220} rot={-3} size={100} tone="orange" />
     </AbsoluteFill>
   );
 };
@@ -114,15 +115,15 @@ export const Defesa: React.FC<SceneProps> = ({ d, b }) => {
           </div>
         );
       })}
-      <Character src={IMG("c7.png")} x={540} y={1100} width={760} />
+      <Puppet x={540} y={1560} height={560} pose={[[0, "idle"], [shield, "crossed"], [hits[0].a, "stop"], [hits[2].a + 12, "hips"]]} />
     </AbsoluteFill>
   );
 };
 
 // ── Label storm (Será que…? / final hook) ──────────────────────────
 export const LabelStorm: React.FC<
-  SceneProps & { labels: string[]; question?: boolean; cta?: string; char?: string; charX?: number; charW?: number }
-> = ({ d, b, labels, question, cta, char = "c10.png", charX = 860, charW = 700 }) => {
+  SceneProps & { labels: string[]; question?: boolean; cta?: string; charX?: number; charW?: number }
+> = ({ d, b, labels, question, cta, charX = 860, charW = 700 }) => {
   const frame = useCurrentFrame();
   const pos = [
     { x: 330, y: 470, r: -6 },
@@ -154,7 +155,7 @@ export const LabelStorm: React.FC<
             />
           );
         })}
-        <Character src={IMG(char)} x={charX} y={980} width={charW} />
+        <Puppet x={charX} y={1490} height={charW} pose={question ? [[0, "chinL"], [q, "shrug"], [q + 70, "raise"]] : [[0, "chin"], [at(b, 1, d, 0.4), "crossed"], [at(b, 2, d, 0.6), "chin"]]} />
       </AbsoluteFill>
       {question && (
         <div

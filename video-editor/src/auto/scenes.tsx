@@ -1,6 +1,7 @@
 import React from "react";
-import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
-import { Backdrop, Bubble, Character, Icon, Label, Orbit, ease, pop } from "./kit";
+import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
+import { Backdrop, Bubble, Icon, Label, Orbit, ease, pop } from "./kit";
+import { Puppet } from "./puppet";
 import { COND, K, clamp } from "./theme";
 
 export type SceneProps = { d: number; b: number[] };
@@ -88,7 +89,7 @@ export const S1: React.FC<SceneProps> = ({ d, b }) => {
       <Cam keys={[0, 14, d]} scale={[1.9, 1.12, 1.03]} y={[260, 0, -20]} origin="50% 40%">
         <Orbit cx={540} cy={760} rx={520} ry={430} at={6} tilt={-18} arc={0.42} width={8} />
         <Orbit cx={540} cy={760} rx={600} ry={500} at={10} tilt={160} arc={0.3} width={5} speed={-0.7} opacity={0.8} />
-        <Character src={IMG("c1.png")} x={540} y={440} width={1240} at={0} breathe={0.008} />
+        <Puppet x={540} y={1760} height={1300} pose={[[0, "chin"], [at(b, 0, d, 0.35), "shrug"], [at(b, 0, d, 0.35) + 45, "chin"]]} />
         {icons.map((ic, i) => {
           const ang = ((ic.a + frame * 0.35) * Math.PI) / 180;
           return (
@@ -174,7 +175,7 @@ export const S2: React.FC<SceneProps> = ({ d, b }) => {
           );
         })}
         <div style={{ position: "absolute", inset: 0, zIndex: 3 }}>
-          <Character src={IMG("c2.png")} x={540} y={760} width={560} at={0} />
+          <Puppet x={540} y={1330} height={600} pose={[[0, "listen"], [at(b, 1, d, 0.4), "shrug"], [at(b, 3, d, 0.5), "open"], [at(b, 0, d, 0.55), "arms"], [at(b, 0, d, 0.55) + 60, "shrug"]]} />
         </div>
       </Cam>
       <Label text="APROVAÇÃO" at={at(b, 5, d, 0.1)} outAt={at(b, 1, d, 0.3) - 12} x={540} y={420} rot={-3} size={150} tone="orange" />
@@ -193,7 +194,7 @@ export const S3: React.FC<SceneProps> = ({ d, b }) => {
     <AbsoluteFill>
       <Backdrop plate={IMG("p3.jpg")} plateOpacity={0.6} />
       <AbsoluteFill style={{ scale: String(zoom), transformOrigin: "52% 38%" }}>
-        <Character src={IMG("c3.png")} x={560} y={560} width={1700} at={0} sway={0.3} />
+        <Puppet x={540} y={1620} height={1150} pose={[[0, "idle"], [raise, "raise"], [at(b, 1, d, 0.6), "talk"], [at(b, 2, d, 0.8), "shrug"]]} />
         {[0, 1, 2, 3].map((i) => {
           const p = pop(frame, raise + i * 2, 8);
           const ang = (-120 + i * 22) * (Math.PI / 180);
@@ -202,8 +203,8 @@ export const S3: React.FC<SceneProps> = ({ d, b }) => {
               key={i}
               style={{
                 position: "absolute",
-                left: 300 + Math.cos(ang) * 150,
-                top: 720 + Math.sin(ang) * 150,
+                left: 820 + Math.cos(ang) * 150,
+                top: 650 + Math.sin(ang) * 150,
                 width: 14,
                 height: 64 * p,
                 background: K.orange,
@@ -305,7 +306,7 @@ export const S5: React.FC<SceneProps> = ({ d, b }) => {
     <AbsoluteFill style={{ background: K.bg0 }}>
       <AbsoluteFill style={{ clipPath: `polygon(0 0, 100% 0, 100% ${42 * split + 8}%, 0 ${54 * split}%)`, background: `linear-gradient(160deg, ${K.teal}, ${K.bg1})` }}>
         <AbsoluteFill style={{ scale: String(zTop), transformOrigin: "35% 30%" }}>
-          <Img src={staticFile(IMG("c5a.png"))} style={{ position: "absolute", left: -40, top: 230, width: 820 }} />
+          <Puppet x={300} y={930} height={640} expr="empolgado" pose={[[0, "talk"], [40, "stop"]]} />
           <Bubble icon="dots" at={8} x={760} y={380} size={200} tone="orange" />
           <Label text={"A OPINIÃO\n5 SEGUNDOS"} at={10} x={760} y={680} rot={-4} size={74} tone="orange" from="right" />
         </AbsoluteFill>
@@ -323,7 +324,7 @@ export const S5: React.FC<SceneProps> = ({ d, b }) => {
               tail={i % 2 ? "left" : "right"}
             />
           ))}
-          <Img src={staticFile(IMG("c5b.png"))} style={{ position: "absolute", right: -60, bottom: -10, width: 860 }} />
+          <Puppet x={780} y={1880} height={720} expr="apreensivo" pose={[[0, "idle"], [swap, "facepalm"]]} />
           <Label text={"A AUTORIZAÇÃO\n20 SEGUNDOS"} at={swap} x={330} y={1250} rot={3} size={74} from="left" />
         </AbsoluteFill>
       </AbsoluteFill>
@@ -358,8 +359,8 @@ export const S6: React.FC<SceneProps> = ({ d, b }) => {
       <Cam keys={[0, d]} scale={[1.05, 1.15]} x={[60, -60]}>
         <Backdrop plate={IMG("p6.jpg")} plateOpacity={0.75} glow={K.orange} />
       </Cam>
-      <Cam keys={[0, close, close + 24, d]} scale={[1.0, 1.0, 1.55, 1.62]} x={[40, -20, 0, 0]} y={[0, 0, 260, 270]} origin="50% 40%">
-        <Character src={IMG("c6.png")} x={540} y={600} width={1700} sway={0.4} />
+      <Cam keys={[0, close, close + 24, d]} scale={[1.0, 1.0, 1.32, 1.36]} x={[40, -20, 0, 0]} y={[0, 0, 90, 96]} origin="50% 46%">
+        <Puppet x={540} y={1700} height={1000} pose={[[0, "listen"], [close, "sheepish"]]} />
         {[0, 1, 2].map((i) => {
           const p = pop(frame, close + 10 + i * 3, 8);
           return (
@@ -396,7 +397,7 @@ export const S7: React.FC<SceneProps> = ({ d, b }) => {
     <AbsoluteFill>
       <Backdrop />
       <Label text={"NÃO É SÓ\nNO TRABALHO"} at={at(b, 1, d, 0.05)} outAt={no - 10} x={540} y={420} rot={-4} size={100} tone="orange" />
-      <Character src={IMG("c7.png")} x={360} y={980} width={900} />
+      <Puppet x={290} y={1470} height={640} pose={[[0, "idle"], [no, "stop"], [no + 50, "shrug"], [no + 90, "stop"]]} />
       <div style={{ position: "absolute", left: 470, top: 280, width: 300, height: 220 }}>
         <Bubble icon="x" at={no} x={150} y={110} size={260} tone="orange" tail="left" />
       </div>
@@ -497,7 +498,7 @@ export const S8: React.FC<SceneProps> = ({ d, b }) => {
                     overflow: "hidden",
                   }}
                 >
-                  <Img src={staticFile(IMG(`m${i + 1}.png`))} style={{ position: "absolute", left: "50%", bottom: 0, height: "86%", translate: "-50% 0", opacity: 0.9 }} />
+                  <Puppet x={140} y={790} height={640} expr={(["sorriso", "empolgado", "piscadinha"] as const)[i]} pose={[[0, (["arms", "hips", "open"] as const)[i]]]} style={{ opacity: 0.92 }} />
                   <div
                     style={{
                       position: "absolute",
@@ -514,7 +515,7 @@ export const S8: React.FC<SceneProps> = ({ d, b }) => {
       </AbsoluteFill>
       <Orbit cx={540} cy={1260} rx={560} ry={90} at={10} tilt={0} arc={0.8} width={6} />
       <Label text="NEGOCIAÇÃO" at={at(b, 1, d, 0.35)} x={540} y={330} rot={-3} size={90} tone="glass" />
-      <Character src={IMG("c8.png")} x={540} y={1050} width={560} />
+      <Puppet x={540} y={1470} height={520} pose={[[0, "chin"], [at(b, 0, d, 0.65), "shrug"]]} />
     </AbsoluteFill>
   );
 };
@@ -546,7 +547,7 @@ export const S9: React.FC<SceneProps> = ({ d, b }) => {
             ))}
           </svg>
         ))}
-        <Character src={IMG("c9.png")} x={540} y={520} width={1500} breathe={0.016} sway={0.2} />
+        <Puppet x={540} y={1660} height={950} pose={[[0, "idle"], [line, "hips"], [at(b, 1, d, 0.7), "open"], [at(b, 4, d, 0.9), "arms"]]} />
       </Cam>
       {["EDUCADA", "RESPEITOSA", "EMPÁTICA"].map((w, i) => (
         <Label key={w} text={w} at={at(b, 1 + i, d, 0.7 + i * 0.04)} x={[270, 810, 540][i]} y={[1130, 1180, 1300][i]} rot={[-5, 4, -2][i]} size={84} tone="glass" />
@@ -614,7 +615,7 @@ export const S10: React.FC<SceneProps> = ({ d, b }) => {
             style={{ opacity: 1 - push * 0.7 }}
           />
         ))}
-        <Character src={IMG("c10.png")} x={860} y={980} width={700} />
+        <Puppet x={860} y={1470} height={640} pose={[[0, "chinL"], [q, "shrug"]]} />
       </Cam>
       <div
         style={{

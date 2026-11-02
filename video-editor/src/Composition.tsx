@@ -4,6 +4,7 @@ import { ReelsComposition as EmotionDesignDemo } from "./scenes/ReelsComposition
 import { ReelsComposition } from "./scenes/ReelsComposition";
 import { ReelsPro, REELS_PRO_FRAMES } from "./pro/ReelsPro";
 import { Autocensura, AUTO_FRAMES } from "./auto/Autocensura";
+import { PuppetTest } from "./auto/PuppetTest";
 
 const FPS = 30;
 // Vídeo editado: 39s → 1170 frames
@@ -14,6 +15,7 @@ const TIMELINE_FRAMES = 437;
 export const VideoEditorComposition = () => {
   return (
     <>
+      <Composition id="PuppetTest" component={PuppetTest} durationInFrames={60} fps={FPS} width={1080} height={1920} />
       <Composition id="Autocensura" component={Autocensura} durationInFrames={AUTO_FRAMES} fps={FPS} width={1080} height={1920} />
       <Composition id="ReelsPro" component={ReelsPro} durationInFrames={REELS_PRO_FRAMES} fps={FPS} width={1080} height={1920} />
       {/* Composição principal: Reels 9:16 com legendas + emotion design */}

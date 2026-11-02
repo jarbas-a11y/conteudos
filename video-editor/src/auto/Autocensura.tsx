@@ -4,14 +4,15 @@ import { Audio } from "@remotion/media";
 import tokens from "../../public/autocensura/voz-captions.json";
 import { COND, FPS, K, clamp } from "./theme";
 import { Grain } from "./kit";
+import { SceneStart } from "./puppet";
 import { S1, S2, S3, S4, S5, S6, S7, S8, S9, SceneProps } from "./scenes";
 import { Condicao, Defesa, Editor, LabelStorm, Redacao } from "./scenes2";
 
 const Serasque: React.FC<SceneProps> = (p) => (
-  <LabelStorm {...p} labels={["ARROGANTE?", "CHATEADO?", "DIFÍCIL?"]} char="c1.png" charX={540} charW={980} />
+  <LabelStorm {...p} labels={["ARROGANTE?", "CHATEADO?", "DIFÍCIL?"]} charX={540} charW={700} />
 );
 const Final: React.FC<SceneProps> = (p) => (
-  <LabelStorm {...p} labels={["ARROGANTE", "DIFÍCIL", "CHATO", "EGOÍSTA"]} question cta="CONTINUA…" />
+  <LabelStorm {...p} labels={["ARROGANTE", "DIFÍCIL", "CHATO", "EGOÍSTA"]} question cta="CONTINUA…" charW={640} />
 );
 
 // [component, start s, end s, beats (absolute seconds)]
@@ -182,9 +183,11 @@ export const Autocensura: React.FC = () => {
         const b = beats.map((t) => Math.round((t - start) * FPS) + lead);
         return (
           <Sequence key={i} from={from} durationInFrames={d} layout="none">
-            <SceneIn first={i === 0}>
-              <Comp d={d} b={b} />
-            </SceneIn>
+            <SceneStart.Provider value={from}>
+              <SceneIn first={i === 0}>
+                <Comp d={d} b={b} />
+              </SceneIn>
+            </SceneStart.Provider>
           </Sequence>
         );
       })}
