@@ -7,7 +7,7 @@ export const SceneStart = createContext(0);
 
 export type Expr =
   | "neutro" | "sorriso" | "rindo" | "empolgado" | "desconfiado" | "bravo" | "surpreso" | "chocado"
-  | "uau" | "apreensivo" | "ironico" | "pensativo" | "piscadinha" | "arregalado" | "falando";
+  | "uau" | "apreensivo" | "ironico" | "pensativo" | "piscadinha" | "arregalado" | "falando" | "cetico";
 
 // ── Poses: hand / foot targets in rig units (neck at 0,0; y down) ──
 type P = [number, number];
@@ -75,7 +75,10 @@ export const Puppet: React.FC<{
   enter?: number; // local frame of the pop-in
   walk?: [number, number, number]; // [fromFrame, toFrame, dx px] walk cycle while moving
   style?: React.CSSProperties;
-}> = ({ x, y, height, pose = [[0, "idle"]], expr, flip, enter = 0, walk, style }) => {
+  headDir?: string;
+  shirt?: string;
+  shirtLine?: string;
+}> = ({ x, y, height, pose = [[0, "idle"]], expr, flip, enter = 0, walk, style, headDir = "autocensura/heads", shirt = SHIRT, shirtLine = "#8A3415" }) => {
   const frame = useCurrentFrame();
   let exprName: Expr = expr ?? "neutro";
   let exprStart = -99;
@@ -182,11 +185,11 @@ export const Puppet: React.FC<{
           {!rFront && !rBehindHead && armR}
           <path
             d={`M-56 ${shY - 6} Q0 ${shY - 22} 56 ${shY - 6} L44 ${hipY + 6} Q0 ${hipY + 16} -44 ${hipY + 6} Z`}
-            fill={SHIRT}
-            stroke="#8A3415"
+            fill={shirt}
+            stroke={shirtLine}
             strokeWidth={4}
           />
-          <path d={`M-20 ${shY - 12} Q0 ${shY + 8} 20 ${shY - 12}`} fill="none" stroke="#8A3415" strokeWidth={4} />
+          <path d={`M-20 ${shY - 12} Q0 ${shY + 8} 20 ${shY - 12}`} fill="none" stroke={shirtLine} strokeWidth={4} />
           <rect x={-46} y={hipY - 4} width={92} height={18} rx={6} fill={PANTS} />
           {lFront && armL}
           {rFront && armR}
@@ -198,7 +201,7 @@ export const Puppet: React.FC<{
         </svg>
       )}
       <Img
-        src={staticFile(`autocensura/heads/${exprName}-${variant}.png`)}
+        src={staticFile(`${headDir}/${exprName}-${variant}.png`)}
         style={{
           position: "absolute",
           left: "50%",

@@ -6,3 +6,4 @@ public/original.mp4
 public/cut.mp4
 scripts/_stills.mjs
 public/autocensura/*.wav
+public/vox/audio/*.wav
