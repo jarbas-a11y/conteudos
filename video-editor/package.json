@@ -16,7 +16,9 @@
     "@remotion/google-fonts": "4.0.539",
     "@remotion/install-whisper-cpp": "4.0.539",
     "@remotion/media": "4.0.539",
+    "@remotion/media-utils": "^4.0.539",
     "@remotion/transitions": "4.0.539",
+    "lucide-react": "^0.468.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "remotion": "4.0.539"

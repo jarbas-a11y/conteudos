@@ -12,6 +12,10 @@ import { Vox4, V4_DURATION } from "./vox/video4";
 import { Vox5, V5_DURATION } from "./vox/video5";
 import { Vox6, V6_DURATION } from "./vox/video6";
 import { Vox7, V7_DURATION } from "./vox/video7";
+import { Vox11, V11_DURATION } from "./vox2/v11";
+import { Carousel9, Carousel12 } from "./vox2/carousel";
+import { Vox13, V13_DURATION } from "./vox2/v13";
+import { Vox14, V14_DURATION } from "./vox2/v14";
 
 const FPS = 30;
 // Vídeo editado: 39s → 1170 frames
@@ -22,6 +26,11 @@ const TIMELINE_FRAMES = 437;
 export const VideoEditorComposition = () => {
   return (
     <>
+      <Composition id="Carousel9" component={Carousel9} durationInFrames={10} fps={30} width={1080} height={1350} />
+      <Composition id="Carousel12" component={Carousel12} durationInFrames={10} fps={30} width={1080} height={1350} />
+      <Composition id="Vox14" component={Vox14} durationInFrames={Math.round(V14_DURATION * FPS)} fps={FPS} width={1080} height={1920} />
+      <Composition id="Vox13" component={Vox13} durationInFrames={Math.round(V13_DURATION * FPS)} fps={FPS} width={1080} height={1920} />
+      <Composition id="Vox11" component={Vox11} durationInFrames={Math.round(V11_DURATION * FPS)} fps={FPS} width={1080} height={1920} />
       <Composition id="Vox7" component={Vox7} durationInFrames={Math.round(V7_DURATION * FPS)} fps={FPS} width={1080} height={1920} />
       <Composition id="Vox6" component={Vox6} durationInFrames={Math.round(V6_DURATION * FPS)} fps={FPS} width={1080} height={1920} />
       <Composition id="Vox5" component={Vox5} durationInFrames={Math.round(V5_DURATION * FPS)} fps={FPS} width={1080} height={1920} />
