@@ -48,6 +48,8 @@ const Fork: React.FC<Ctx> = ({ cue }) => {
       <Bg tone="both" />
       <Svg>
         <Stroke d="M540 1640 L540 1260" at={2} dur={12} color={P.white} width={8} />
+        <Stroke d="M540 1260 C 540 1100, 300 1060, 260 860" at={10} dur={14} color={P.lav} width={6} opacity={0.5} />
+        <Stroke d="M540 1260 C 540 1100, 780 1060, 820 860" at={14} dur={14} color={P.lav} width={6} opacity={0.5} />
         <Stroke d="M540 1260 C 540 1100, 300 1060, 260 860" at={prep - 6} dur={14} color={P.cyan} width={8} glow />
         <Stroke d="M540 1260 C 540 1100, 780 1060, 820 860" at={ins - 6} dur={14} color={P.danger} width={8} glow />
       </Svg>
@@ -112,8 +114,8 @@ const Helps: React.FC<Ctx> = () => {
 const TheirReply: React.FC<Ctx> = () => (
   <AbsoluteFill>
     <Bg tone="violet" />
-    <Avatar x={200} y={1040} s={0.9} at={0} tone={P.lav} />
-    <Bubble x={320} y={880} w={680} at={4} typing={[4, 9999]} size={64} name="Marina" />
+    <Avatar x={540} y={1450} s={2} at={0} tone={P.lav} />
+    <Bubble x={240} y={820} w={600} at={4} typing={[4, 9999]} size={90} name="Marina" />
   </AbsoluteFill>
 );
 
@@ -149,16 +151,15 @@ const Tree: React.FC<Ctx> = ({ cue }) => {
 };
 
 /* 7 · Five versions of a conversation that never happened */
-const Five: React.FC<Ctx> = ({ cue }) => {
+const Five: React.FC<Ctx> = () => {
   const f = useCurrentFrame();
-  const c = cue("cinco versoes");
   return (
     <AbsoluteFill>
       <Bg tone="violet" />
       {[0, 1, 2, 3, 4].map((i) => {
-        const p = expo(f, c - 10 + i * 4, 16);
+        const p = expo(f, 4 + i * 5, 16);
         return (
-          <Glass key={i} x={240 + (i - 2) * 90 * p} y={760 + (i - 2) * 50 * p} w={600} h={620} at={c - 10 + i * 4} from="pop" tilt={[0, (i - 2) * -8 * p]} style={{ zIndex: i }}>
+          <Glass key={i} x={240 + (i - 2) * 90 * p} y={760 + (i - 2) * 50 * p} w={600} h={620} at={4 + i * 5} from="pop" tilt={[0, (i - 2) * -8 * p]} style={{ zIndex: i }}>
             <div style={{ padding: 30, fontFamily: MONO, fontWeight: 700, fontSize: 26, color: i === 4 ? P.cyan : P.mute }}>versão {i + 1}</div>
             <MiniChat x={40} y={110} w={520} f0={i * 7} />
           </Glass>
@@ -338,9 +339,9 @@ const Payoff: React.FC<Ctx> = ({ cue }) => {
 const SCENES: SceneDef[] = [
   { at: 0, C: Hook, cap: TOP, z: 1.0 },
   { at: "se sim", C: Fork, cap: TOP, z: 1.0, tr: "cut" },
-  { at: "pensa numa conversa", C: Calendar, cap: TOP, z: 1.05 },
+  { at: "pensa numa conversa", C: Calendar, cap: TOP, z: 1.15 },
   { at: "voce comeca imaginando", C: Outline, cap: TOP, z: 1.0, tr: "cut" },
-  { at: "ate ai", C: Helps, cap: TOP, z: 1.05, tr: "zoom" },
+  { at: "ate ai", C: Helps, cap: TOP, z: 1.25, tr: "zoom" },
   { at: "so que em algum", C: TheirReply, cap: TOP, z: 1.0, tr: "cut" },
   { at: "ai prepara", C: Tree, cap: TOP, z: 1.0 },
   { at: "quando percebe", C: Five, cap: TOP, z: 1.0, tr: "flash" },
@@ -355,7 +356,7 @@ const SCENES: SceneDef[] = [
   { at: "porque se preparar", C: Payoff, cap: TOP, z: 1.05, tr: "cut" },
 ];
 
-export const V10_DURATION = 98 + 1.6;
+export const V10_DURATION = 98.36 + 1.6;
 export const Vox10: React.FC = () => (
   <VoxVideo
     audio="vox/audio/10.wav"

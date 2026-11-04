@@ -33,12 +33,12 @@ const Evaluated: React.FC<Ctx> = ({ cue }) => {
       {[0, 1, 2, 3].map((i) => {
         const a = (i / 4) * Math.PI * 2 - Math.PI / 2 + f * 0.01;
         return (
-          <div key={i} style={{ position: "absolute", left: 540 + Math.cos(a) * 380 - 50, top: 1060 + Math.sin(a) * 300 - 50, scale: String(pop(f, av + i * 4, 12)) }}>
+          <div key={i} style={{ position: "absolute", left: 540 + Math.cos(a) * 380 - 50, top: 1060 + Math.sin(a) * 300 - 50, scale: String(pop(f, 10 + i * 22, 12)) }}>
             <Ico I={Eye} size={100} color={P.cyan} />
           </div>
         );
       })}
-      <Glass x={600} y={700} w={380} h={150} at={av + 10} from="pop">
+      <Glass x={600} y={640} w={380} h={150} at={av - 4} from="pop">
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", gap: 8 }}>
           {[0, 1, 2, 3, 4].map((i) => <div key={i} style={{ width: 40, height: 40, borderRadius: 20, border: `4px solid ${P.lav}` }} />)}
         </div>
@@ -151,13 +151,13 @@ const Why: React.FC<Ctx> = () => (
 const Pedestal: React.FC<Ctx> = ({ cue }) => {
   const f = useCurrentFrame();
   const sup = cue("superioridade");
-  const h = 380 * expo(f, sup - 20, 26);
+  const h = 170 * expo(f, cue("posicao") - 4, 20) + 230 * expo(f, sup - 8, 22);
   return (
     <AbsoluteFill>
       <Bg tone="both" />
       <div style={{ position: "absolute", left: 600, top: 1560 - h, width: 360, height: h, borderRadius: "18px 18px 0 0", background: `linear-gradient(180deg, ${P.lav}, ${P.violet} 30%, ${P.deep})`, boxShadow: `0 0 60px ${P.violet}66` }} />
-      <Avatar x={780} y={1430 - h} s={1.3} at={4} tone={P.lav} crown />
-      <Avatar x={300} y={1430} s={1.3} at={0} tone={P.violet} />
+      <Avatar x={780} y={1400 - h} s={1.6} at={4} tone={P.lav} crown />
+      <Avatar x={300} y={1400} s={1.6} at={0} tone={P.violet} />
       <div style={{ position: "absolute", left: 60, right: 60, top: 1560, height: 4, background: P.dim }} />
     </AbsoluteFill>
   );
@@ -170,8 +170,8 @@ const Grade: React.FC<Ctx> = ({ cue }) => {
   return (
     <AbsoluteFill>
       <Bg tone="violet" />
-      <Bubble x={90} y={700} w={760} at={2} size={46} text="Hmm, não sei se concordo." name="Diretor" />
-      <Glass x={300} y={1040} w={480} h={420} at={val - 8} from="zoom" glow={P.danger} strong>
+      <Bubble x={70} y={640} w={900} at={2} size={58} text="Hmm, não sei se concordo." name="Diretor" />
+      <Glass x={300} y={1040} w={480} h={420} at={cue("avaliacao") - 4} from="zoom" glow={P.danger} strong>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%" }}>
           <div style={{ fontFamily: MONO, fontSize: 26, letterSpacing: 5, color: P.mute }}>MEU VALOR</div>
           <div style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 200, color: P.danger, lineHeight: 1 }}>{Math.round(interpolate(f, [val, val + 20], [10, 4], clamp))}</div>
@@ -260,10 +260,10 @@ const SCENES: SceneDef[] = [
   { at: 0, C: Hook, cap: TOP, z: 1.0 },
   { at: "as vezes aquela pessoa", C: Evaluated, cap: TOP, z: 1.05 },
   { at: "imagina uma reuniao", C: Meeting, cap: TOP, z: 1.0, tr: "cut" },
-  { at: "pode ser seu chefe", C: WhoIs, cap: TOP, z: 1.1 },
-  { at: "de repente", C: TwiceThink, cap: TOP, z: 1.0, tr: "flash" },
+  { at: "pode ser seu chefe", C: WhoIs, cap: TOP, z: 1.3 },
+  { at: "de repente", C: TwiceThink, cap: TOP, z: 1.08, tr: "flash" },
   { at: "e o interessante", C: KnowMore, cap: TOP, z: 1.0 },
-  { at: "sabe por que", C: Why, cap: TOP, z: 1.1, tr: "zoom" },
+  { at: "sabe por que", C: Why, cap: TOP, z: 1.2, tr: "zoom" },
   { at: "porque a maneira", C: Pedestal, cap: TOP, z: 1.0, tr: "cut" },
   { at: "pode acabar tratando", C: Grade, cap: TOP, z: 1.0 },
   { at: "e ai a conversa", C: Split, cap: TOP, z: 1.0, tr: "zoom" },
@@ -272,7 +272,7 @@ const SCENES: SceneDef[] = [
   { at: "talvez o que", C: Payoff, cap: TOP, z: 1.0, tr: "cut" },
 ];
 
-export const V8_DURATION = 85 + 1.6;
+export const V8_DURATION = 83.28 + 1.6;
 export const Vox8: React.FC = () => (
   <VoxVideo
     audio="vox/audio/8.wav"
